@@ -20,7 +20,7 @@ button {padding:10px;border-radius:50%;background:#00ff88;border:none;}
 
 <body>
 
-<header>FM-AI</header>
+<header>FM-AI (AI Search)</header>
 
 <div id="results" class="content"></div>
 
@@ -30,22 +30,61 @@ button {padding:10px;border-radius:50%;background:#00ff88;border:none;}
 </div>
 
 <script>
+
+// 📚 DATA
 let data = [
 {
 book:"فتح المعين",
 page:"45",
 text:"شروط الصلاة خمسة أحدها طهارة عن حدث وجنابة",
 meaning:"നിസ്കാരത്തിന് അഞ്ച് വ്യവസ്ഥകളുണ്ട്"
+},
+{
+book:"فتح المعين",
+page:"46",
+text:"الوضوء استعمال الماء في أعضاء مخصوصة",
+meaning:"വുദൂ എന്നത് പ്രത്യേക അവയവങ്ങളിൽ വെള്ളം ഉപയോഗിക്കുന്നതാണ്"
 }
 ];
 
+// 🧠 Malayalam → Arabic mapping
+let dictionary = {
+"നിസ്കാരം":"صلاة",
+"നമസ്കാരം":"صلاة",
+"ഷർത്ത്":"شروط",
+"നിബന്ധന":"شروط",
+"ശുദ്ധി":"طهارة",
+"വുദൂ":"وضوء",
+"തഹാറത്":"طهارة"
+};
+
+// 🔄 translate Malayalam → Arabic
+function translate(query){
+let words = query.split(" ");
+let result = [];
+
+words.forEach(w=>{
+if(dictionary[w]){
+result.push(dictionary[w]);
+}else{
+result.push(w);
+}
+});
+
+return result.join(" ");
+}
+
+// 🔍 search function
 function search(){
 let q=document.getElementById("q").value.toLowerCase();
 let res=document.getElementById("results");
+
 res.innerHTML="";
 
+let arabicQuery = translate(q);
+
 data.forEach(d=>{
-if(d.text.includes(q)||d.meaning.includes(q)){
+if(d.text.includes(arabicQuery) || d.meaning.includes(q)){
 res.innerHTML+=`
 <div class="card">
 <div>${d.book} | ص ${d.page}</div>
@@ -55,6 +94,7 @@ res.innerHTML+=`
 }
 });
 }
+
 </script>
 
 </body>
