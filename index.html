@@ -6,32 +6,135 @@
 <title>FM-AI</title>
 
 <style>
-body {background:#050505;color:white;font-family:sans-serif;margin:0;padding-bottom:100px;}
-header {padding:15px;color:#00ff88;font-weight:bold;}
-.content {padding:20px;}
-.card {background:#111;padding:15px;border-radius:15px;margin-bottom:10px;}
-.arabic {direction:rtl;font-size:22px;}
-.bottom {position:fixed;bottom:0;width:100%;padding:10px;background:#000;}
-input {width:75%;padding:10px;border-radius:20px;border:none;}
-button {padding:10px;border-radius:50%;background:#00ff88;border:none;}
+:root {
+--bg:#050505;
+--card:rgba(255,255,255,0.05);
+--accent:#00ff88;
+--text:#ccc;
+}
+
+body {
+background:var(--bg);
+color:white;
+font-family: 'Segoe UI', sans-serif;
+margin:0;
+padding-bottom:100px;
+}
+
+/* HEADER */
+header {
+padding:18px;
+display:flex;
+justify-content:space-between;
+border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.brand {
+color:var(--accent);
+font-weight:900;
+font-size:18px;
+}
+
+/* CONTENT */
+.content {
+padding:20px;
+}
+
+/* CARD */
+.card {
+background:var(--card);
+backdrop-filter:blur(10px);
+border-radius:20px;
+padding:20px;
+margin-bottom:15px;
+border:1px solid rgba(255,255,255,0.08);
+animation:fade 0.3s ease;
+}
+
+@keyframes fade {
+from {opacity:0;transform:translateY(10px);}
+to {opacity:1;}
+}
+
+.ref {
+font-size:12px;
+color:var(--accent);
+margin-bottom:8px;
+}
+
+.arabic {
+direction:rtl;
+font-size:22px;
+line-height:1.8;
+margin-bottom:10px;
+}
+
+.meaning {
+color:var(--text);
+border-right:2px solid var(--accent);
+padding-right:10px;
+}
+
+/* BOTTOM INPUT */
+.bottom {
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+padding:15px;
+background:linear-gradient(transparent,#000 40%);
+}
+
+.input-box {
+display:flex;
+background:rgba(255,255,255,0.08);
+border-radius:30px;
+padding:5px 10px;
+backdrop-filter:blur(15px);
+}
+
+input {
+flex:1;
+background:transparent;
+border:none;
+color:white;
+padding:12px;
+outline:none;
+font-size:15px;
+}
+
+button {
+background:var(--accent);
+border:none;
+width:40px;
+height:40px;
+border-radius:50%;
+font-weight:bold;
+cursor:pointer;
+}
 </style>
 
 </head>
 
 <body>
 
-<header>FM-AI (AI Search)</header>
+<header>
+<div class="brand">FM-AI</div>
+<div style="font-size:12px;color:#888;">Shafi'i Reference</div>
+</header>
 
 <div id="results" class="content"></div>
 
 <div class="bottom">
-<input id="q" placeholder="ചോദ്യം ചോദിക്കൂ...">
+<div class="input-box">
+<input id="q" placeholder="വിഷയം ചോദിക്കൂ...">
 <button onclick="search()">↑</button>
+</div>
 </div>
 
 <script>
 
-// 📚 DATA
+// DATA
 let data = [
 {
 book:"فتح المعين",
@@ -47,7 +150,7 @@ meaning:"വുദൂ എന്നത് പ്രത്യേക അവയവ�
 }
 ];
 
-// 🧠 Malayalam → Arabic mapping
+// Malayalam → Arabic dictionary
 let dictionary = {
 "നിസ്കാരം":"صلاة",
 "നമസ്കാരം":"صلاة",
@@ -58,39 +161,31 @@ let dictionary = {
 "തഹാറത്":"طهارة"
 };
 
-// 🔄 translate Malayalam → Arabic
-function translate(query){
-let words = query.split(" ");
-let result = [];
-
+function translate(q){
+let words=q.split(" ");
+let out=[];
 words.forEach(w=>{
-if(dictionary[w]){
-result.push(dictionary[w]);
-}else{
-result.push(w);
-}
+out.push(dictionary[w] || w);
 });
-
-return result.join(" ");
+return out.join(" ");
 }
 
-// 🔍 search function
 function search(){
 let q=document.getElementById("q").value.toLowerCase();
 let res=document.getElementById("results");
-
 res.innerHTML="";
 
-let arabicQuery = translate(q);
+let arabic=translate(q);
 
 data.forEach(d=>{
-if(d.text.includes(arabicQuery) || d.meaning.includes(q)){
+if(d.text.includes(arabic) || d.meaning.includes(q)){
 res.innerHTML+=`
 <div class="card">
-<div>${d.book} | ص ${d.page}</div>
+<div class="ref">${d.book} | ص ${d.page}</div>
 <div class="arabic">${d.text}</div>
-<div>${d.meaning}</div>
-</div>`;
+<div class="meaning">${d.meaning}</div>
+</div>
+`;
 }
 });
 }
