@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FM-AI</title>
+
+<style>
+body {background:#050505;color:white;font-family:sans-serif;margin:0;padding-bottom:100px;}
+header {padding:15px;color:#00ff88;font-weight:bold;}
+.content {padding:20px;}
+.card {background:#111;padding:15px;border-radius:15px;margin-bottom:10px;}
+.arabic {direction:rtl;font-size:22px;}
+.bottom {position:fixed;bottom:0;width:100%;padding:10px;background:#000;}
+input {width:75%;padding:10px;border-radius:20px;border:none;}
+button {padding:10px;border-radius:50%;background:#00ff88;border:none;}
+</style>
+
+</head>
+
+<body>
+
+<header>FM-AI</header>
+
+<div id="results" class="content"></div>
+
+<div class="bottom">
+<input id="q" placeholder="ചോദ്യം ചോദിക്കൂ...">
+<button onclick="search()">↑</button>
+</div>
+
+<script>
+let data = [
+{
+book:"فتح المعين",
+page:"45",
+text:"شروط الصلاة خمسة أحدها طهارة عن حدث وجنابة",
+meaning:"നിസ്കാരത്തിന് അഞ്ച് വ്യവസ്ഥകളുണ്ട്"
+}
+];
+
+function search(){
+let q=document.getElementById("q").value.toLowerCase();
+let res=document.getElementById("results");
+res.innerHTML="";
+
+data.forEach(d=>{
+if(d.text.includes(q)||d.meaning.includes(q)){
+res.innerHTML+=`
+<div class="card">
+<div>${d.book} | ص ${d.page}</div>
+<div class="arabic">${d.text}</div>
+<div>${d.meaning}</div>
+</div>`;
+}
+});
+}
+</script>
+
+</body>
+</html>
